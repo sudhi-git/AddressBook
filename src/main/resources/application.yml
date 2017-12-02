@@ -1,0 +1,56 @@
+debug: false
+
+spring.jpa.show-sql: true
+spring.jpa.generate-ddl: false
+
+logging:
+  level:
+    root: INFO
+
+com.sudhi.samples:
+   servicePath: Person
+   persistenceUnit: AddressBook
+   language: en
+   country: US
+
+management:
+  context-path: /admin
+  security:
+    enabled: true
+    
+endpoints:
+  enabled: true
+  sensitive: true
+
+server:
+  port: 8081
+  
+---
+
+spring:
+    profiles: default
+    datasource:
+      username: sa
+      password:
+      driver-class-name: org.h2.Driver
+      url: jdbc:h2:~/test;DB_CLOSE_ON_EXIT=FALSE 
+
+---
+
+spring:
+    profiles: hanatest
+    datasource:
+      username: SBSS_34116333816518117531188118529512657900229771883829698968484631803
+      password: Aa_32503289723793530474352673415194826059982011298171106880243970899
+      driver-class-name: com.sap.db.jdbc.Driver
+      url: jdbc:sap://10.253.78.204:30015/?currentschema=86684AB4796A4713888580B23BCD58D6 
+
+---
+
+spring:
+    profiles: hana
+    datasource:
+      username: LBN_HANA
+      password: LBN1HanaTest
+      driver-class-name: com.sap.db.jdbc.Driver
+      url: jdbc:sap://ldcikv5.wdf.sap.corp:30215/

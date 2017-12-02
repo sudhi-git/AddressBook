@@ -1,0 +1,224 @@
+################################################################################
+#                             Metadata                                         #
+################################################################################
+# this is an example API to illustrate the usage of Swagger
+
+swagger: '2.0'
+info:
+  title: Address Book API
+  description: This is the Address Book API where you can maintain addresses of people
+  version: "1.0.0"
+  contact: 
+    name: sudhi.bhat79@gmail.com
+  
+schemes:
+  - https
+  
+basePath: /v1
+produces: 
+  - application/json
+
+################################################################################
+#                                 Paths                                        #
+################################################################################ 
+  
+paths:
+  /persons:
+    get:
+      summary: Returns a list of people and addresses
+      description: Returns a list of people and addresses. The list if pageable
+      tags:
+        - AddressBook
+      parameters:
+        - name: pageId
+          in: query
+          type: integer
+          format: int32
+          default: 0
+          required: false
+          description: Page Number
+        - name: pageSize
+          in:  query
+          type: integer
+          format: int32
+          default: 32
+          required: false
+          description: number of Products per page        
+      responses:
+        200:
+          description: A list of Name and Address
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Person'
+
+    post:
+      summary: Creates a new Person with address
+      description: |
+        Creates a new Person. The URI of the new Person is returned in the Location header field. Field Id must be equal to 0.
+      tags:
+        - Person
+      parameters:
+        - name: person
+          in: body
+          description: The new Person to be created
+          required: true
+          schema:
+            $ref: '#/definitions/Person'
+      responses:
+        201:
+          description: Person created
+        400:
+          description: Malformed payload
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Error'
+        409: 
+          description: Person already exists
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Error'   
+                                   
+  /person/{id}:              
+    get:
+      summary: Retrieves a Person.
+      description: |
+        Retrieves a Person from the database.
+      tags:
+        - Person
+      parameters:
+        - name: id
+          in: path
+          description: The id of the Person to be retrieved
+          type: string
+          required: true
+      responses:
+        200:
+          description: Person found
+          schema:
+            $ref: '#/definitions/Person'          
+        404: 
+          description: Person does not exist
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Error'
+
+    put:
+      summary: Updates an existing Person.
+      description: |
+        Updates an existing person. The URI of the Product is returned in the Location header field.
+      tags:
+        - Person
+      parameters:
+        - name: id
+          in: path
+          description: The id of the Person to be retrieved
+          type: String
+          required: true      
+        - name: person
+          in: body
+          description: The Person to be modified
+          required: true
+          schema:
+            $ref: '#/definitions/Person'
+      responses:
+        200:
+          description: Person updated
+        404: 
+          description: Person not found
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Error'
+          
+    delete:
+      summary: Deletes a Person.
+      description: |
+        Deletes a Person from the database.
+      tags:
+        - Person
+      parameters:
+        - name: id
+          in: path
+          description: The id of the Person to be deleted
+          type: string
+          required: true
+      responses:
+        204:
+          description: Person deleted
+
+################################################################################
+#                               Definitions                                    #
+################################################################################
+          
+definitions:
+  Person:
+    type: object
+    properties:
+      Id: 
+        type: string
+        description: ID of the person
+      FirstName:
+        type: string
+        description: First name of the person
+      LastName:
+        type: string
+        description: Last name of the person
+      MiddleName:
+        type: string
+        description: Middle name of the person
+      addresses:
+        type: array
+        description: List of addresses for the person
+        items:
+          $ref: '#/definitions/Address'
+          
+  Address:
+    type: object
+    properties:
+      AddressNumber:
+        type: string
+        description: Address Number
+      Street1:
+        type: string
+        description: Street 1 address
+      Street2:
+        type: string
+        description: Street 2 address
+      HouseNumber:
+        type: string
+        description: House Number
+      PostalCode:
+        type: string
+        description: Postal Code
+      City:
+        type: string
+        description: City
+      Country:
+        type: string
+        description: Country
+      CountryCode:
+        type: string
+        description: Country Code
+      EmailAddress:
+        type: string
+        description: Email Address
+        
+  Error:
+    type: object
+    properties:
+       code:
+          type: string
+          description: Internal message key
+       message:
+          type: string
+          description: Localized message     
+       target:
+          type: string
+          description: Indentifier of UI element
+       severity:
+          type: string
+          description: Classification of error severity                                                                   
